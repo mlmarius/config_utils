@@ -148,38 +148,3 @@ class IniConfigReader(BaseConfigReader):
                 continue
         else:
             raise ConfigError()
-
-
-class Configy:
-    def __init__(self, options: List[ConfigOption] = None, env_prefix=None, fallback: Config = None):
-        self.env_prefix = env_prefix or ''
-        self._fallback = fallback
-        self.options = {}
-        if options is not None:
-            for option in options:
-                # add our prefix to the options that do not have an option prefix
-                if option.env_prefix is None \
-                        and option.env_prefix is not False \
-                        and env_prefix is not None:
-                    option.env_prefix = env_prefix
-
-                self.options[option.name] = option
-
-    def __contains__(self, item):
-        return item in self.options
-
-    def __add__(self, other: Config):
-        return Config({**self.options, **other.options}.values())
-
-    def __getitem__(self, item):
-        if item not in self:
-            if self._fallback is None:
-                raise ValueError(f"Option {item} is not configured")
-            return self._fallback[item]
-        return self.options.get(item).value
-
-    def cache(self) -> Dict[str, Union[str, bool, int, float]]:
-        output = {}
-        for option in self.options.values():
-            output[option.name] = option.value
-        return output
