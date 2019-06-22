@@ -1,80 +1,197 @@
 from __future__ import annotations
 
 import configparser
+import logging
 import os
 from abc import ABC, abstractmethod
+from collections import defaultdict
 from typing import List, Callable, Dict, Union, Tuple, Any, Set
 
+LOGGER = logging.getLogger('config_utils')
 
-class ConfigOption:
 
-    def __init__(self, name: str, default=None, value=None, processor: Callable = None, section: str = None,
-                 description: str = None):
-        self.name = name
-        self._processor = processor or (lambda x: x)
-        self.default = default
-        self.section = section
-        self.value = value
-        self.description = description
-
-    def process(self, value):
-        return self._processor(value)
-
+class BaseOption(ABC):
     def __hash__(self):
         return hash((self.name, self.section))
 
-    def __eq__(self, other: ConfigOption):
+    def __eq__(self, other: Option):
         return self.section == other.section and self.name == other.name
 
     def __str__(self):
         return self.name
 
 
+class Option(BaseOption):
+
+    def __init__(
+            self,
+            name: str,
+            default=None,
+            value=None,
+            processor: Callable = None,
+            section: str = None,
+            description: str = None
+    ):
+        self.name = name
+        self._processor = processor or (lambda x: x)
+        self._default = default
+        self.section = section
+        self._value = value
+        self.description = description
+
+    @property
+    def value(self):
+        if self._value:
+            return self._processor(self._value)
+
+    @property
+    def default(self):
+        if self._default:
+            return self._processor(self._default)
+
+
+class BoundOption(BaseOption):
+    def __init__(self,
+                 config_option: Option,
+                 reader: BaseConfig
+                 ):
+        self._option = config_option
+        self._reader = reader
+
+    def __getattr__(self, name):
+        return self._option.__getattribute__(name)
+
+    def resolve(self):
+        return self._reader.resolve(self)
+
+
 class BaseConfig(ABC):
 
-    def __init__(self):
-        self.readers = []
+    def __init__(self, options: List[Option] = None, readers: List[BaseConfig] = None):
+        self.readers = readers or []
+        self._options = set(options or [])
+
+    def get_flat(self) -> Union[Set, List]:
+        if isinstance(self, BaseConfigReader):
+            return set(), [self]
+
+        readers = []
+        options = self._options
+
+        for reader in self.readers:
+            new_options, new_readers = reader.get_flat()
+            readers += new_readers
+            options |= new_options
+
+        return options, readers
+
+    def flatten(self):
+        readers, options = self.get_flat()
+        self.readers = readers
+        self._options = options
 
     @abstractmethod
-    def __getitem__(self, searched: Union[Tuple[str, str], ConfigOption]) -> Any:
+    def get_option(self, name: str, section: str = None) -> BoundOption:
         pass
 
     @abstractmethod
-    def options(self) -> Set[ConfigOption]:
+    def resolve(self, option: Option) -> Any:
+        pass
+
+    @abstractmethod
+    def options(self) -> Set[Option]:
+        pass
+
+    @abstractmethod
+    def resolve(self, option: BaseOption):
         pass
 
 
 class Config(BaseConfig):
-    def __init__(self, options: List[ConfigOption], readers: List[BaseConfig] = None):
-        self._options: Set[ConfigOption] = set(options) or set()
-        self.readers = readers or []
+    def __init__(self, options: List[Option] = None, readers: List[BaseConfig] = None, section: str = None):
+        super().__init__(options, readers)
+        # will automatically set the following section to all newly appended ConfigOptions
+        self.section = section
+
+    def option(
+            self,
+            name: str,
+            default=None,
+            value=None,
+            processor: Callable = None,
+            section: str = None,
+            description: str = None
+    ) -> Config:
+
+        if section is not None:
+            self.section = section
+
+        self._options.add(Option(
+            name=name,
+            default=default,
+            value=value,
+            processor=processor,
+            description=description,
+            section=self.section
+        ))
+        return self
 
     @property
-    def options(self) -> Set[ConfigOption]:
-        output = set() ^ self._options
-        for reader in self.readers:
-            output ^= reader.options
-        return output
+    def options(self) -> Set[Option]:
+        return self._options | set()
 
     def __add__(self, other: BaseConfig):
         return Config(
-            options=self.options ^ other.options,
-            readers=self.readers + other.readers
+            options=[],
+            readers=[self, other]
         )
-        # self.readers.append(other.readers)
 
-    def get_option(self, name: str, section: str = None) -> ConfigOption:
-        for option in self.options:
+    # all children options and readers now belong to this
+    def flatten(self):
+        options, readers = self.get_flat()
+        self._options = options
+        self.readers = readers
+
+    def get_option(self, name: str, section: str = None) -> BoundOption:
+        for option in self._options:
             if option.name == name and option.section == section:
-                return option
+                return BoundOption(option, self)
         else:
-            raise ValueError(f'Undefined option {name}')
+            # reverse the readers so that config operations
+            # can work like so:
+            # big_config = defaults + config1 + config2
+            for reader in reversed(self.readers):
+                try:
+                    return reader.get_option(name, section)
+                except UndefinedOptionError:
+                    continue
+            raise UnassignedOptionError(f'Undefined option {name}')
 
-    def __getitem__(self, item: Union[str, Tuple[str, str], ConfigOption]) -> Any:
+    # determine the value of an option only using the local readers
+    # do not propagate to other BaseConfigs
+    def resolve(self, option: Option):
+        if option not in self._options:
+            raise ConfigError(f'Reader does not have option {option.name}')
 
-        if not isinstance(item, ConfigOption):
+        attempts = []
+        for reader in [rd for rd in self.readers if isinstance(rd, BaseConfigReader)]:
+            try:
+                return reader.resolve(option)
+            except UnassignedOptionError as e:
+                attempts += e.attempts
+
+        if option.default is not None:
+            return option.default
+
+        raise UnassignedOptionError(f"{option.name} - could not be resolved", attempts)
+
+    def __getitem__(self, item: Union[str, Tuple[str, str], Option]) -> Any:
+
+        if not isinstance(item, Option):
+            # look for option in our default section
             if isinstance(item, str):
-                item = self.get_option(item, None)
+                item = self.get_option(item, self.section)
+            # search option in specific section
             elif isinstance(item, tuple):
                 name, section = item
                 item = self.get_option(name, section)
@@ -82,36 +199,61 @@ class Config(BaseConfig):
         if item.value is not None:
             return item.value
 
-        for reader in self.readers:
-            try:
-                return item.process(reader[item])
-            except ConfigError:
-                continue
-
-        if item.default is not None:
-            return item.process(item.default)
-
-        raise ValueError(f'Undefined value {item.name}')
+        try:
+            return item.resolve()
+        except ConfigError as e:
+            LOGGER.error(e)
+            if item.default is not None:
+                return item.default
+            for message in e.attempts:
+                LOGGER.warning(message)
+            raise e
 
     def cache(self) -> Dict[str, Union[str, bool, int, float]]:
-        # @todo return a result that can also include sections
-        output = {}
+        output = defaultdict(dict)
         for option in self.options:
-            output[option.name] = option.value
-        return output
+            output[option.section][option.name] = self[option]
+        return dict(output)
 
 
 class ConfigError(Exception):
+    def __init__(self, message=None, attempts=None):
+        self.message = message
+        self.attempts = attempts
+
+
+class UndefinedOptionError(ConfigError):
+    pass
+
+
+class UnassignedOptionError(ConfigError):
     pass
 
 
 class BaseConfigReader(BaseConfig):
+
+    def get_option(self, name: str, section: str = None) -> BoundOption:
+        raise UndefinedOptionError()
+
+    @abstractmethod
+    def resolve(self, option: Option) -> Any:
+        pass
+
     @property
-    def options(self) -> Set[ConfigOption]:
+    def options(self) -> Set[Option]:
         return set()
 
 
 class EnvConfigReader(BaseConfigReader):
+
+    def resolve(self, option: BaseOption):
+        try:
+            return os.environ[self._env_name(option.name)]
+        except KeyError:
+            raise UnassignedOptionError(attempts=[
+                f'{self.__class__.__name__} | searching for {option.name} | could not find {self._env_name(
+                    option.name)}'
+            ])
 
     def __init__(self, prefix=None):
         super().__init__()
@@ -120,15 +262,10 @@ class EnvConfigReader(BaseConfigReader):
     def _env_name(self, name: str) -> str:
         return (self._prefix + name).upper()
 
-    def __getitem__(self, searched: ConfigOption) -> Any:
-        try:
-            return os.environ[self._env_name(searched.name)]
-        except KeyError:
-            raise ConfigError()
-
 
 class IniConfigReader(BaseConfigReader):
     def __init__(self, filepath: str, section: str = None, sections: List[str] = None):
+        super().__init__()
         with open(filepath, 'rt') as f:
             self._config = configparser.ConfigParser()
             self._config.read_file(f)
@@ -138,13 +275,16 @@ class IniConfigReader(BaseConfigReader):
         elif section is not None:
             self._sections = [section]
         else:
-            raise Exception('Need to configure ONLY one of "section" or "sections"')
+            raise ConfigError('Need to configure ONLY one of "section" or "sections"')
 
-    def __getitem__(self, searched: ConfigOption):
+    def resolve(self, option: Option):
+        attempts = []
         for section in self._sections:
             try:
-                return self._config[section][searched.name]
+                return self._config[section][option.name]
             except KeyError:
-                continue
+                attempts.append(
+                    f'{self.__class__.__name__} | searching for {option.name} | not found in section {section}'
+                )
         else:
-            raise ConfigError()
+            raise UnassignedOptionError(attempts=attempts)

@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="97c299b4-1460-4469-adf7-802d5195bf4e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/config.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/config_utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/config_utils/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_one.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_one.py" afterDir="false" />
@@ -26,14 +25,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_one.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="70">
-              <caret line="30" column="82" selection-start-line="30" selection-start-column="82" selection-end-line="30" selection-end-column="82" />
+            <state relative-caret-position="138">
+              <caret line="94" column="35" selection-start-line="94" selection-start-column="35" selection-end-line="94" selection-end-column="35" />
               <folding>
-                <element signature="e#0#13#0" expanded="true" />
+                <element signature="e#0#9#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.tox/py3.7/lib/python3.7/site-packages/_pytest/assertion/rewrite.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="208">
+              <caret line="308" selection-start-line="308" selection-end-line="308" />
             </state>
           </provider>
         </entry>
@@ -56,14 +64,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/config_utils/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="382">
-              <caret line="92" column="26" selection-start-line="92" selection-start-column="26" selection-end-line="92" selection-end-column="26" />
+            <state relative-caret-position="199">
+              <caret line="208" column="23" selection-start-line="208" selection-start-column="23" selection-end-line="208" selection-end-column="23" />
               <folding>
                 <element signature="e#0#34#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.tox/py3.7/lib/python3.7/os.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="125">
+              <caret line="674" selection-start-line="674" selection-end-line="674" />
             </state>
           </provider>
         </entry>
@@ -95,6 +112,12 @@
       <find>for section</find>
       <find>raise Valu</find>
       <find>class Config(</find>
+      <find>class BaseConfig</find>
+      <find>class Bound</find>
+      <find>def flatten</find>
+      <find>def get_flat</find>
+      <find>raise ConfigError</find>
+      <find>should raise</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -107,14 +130,14 @@
         <option value="$PROJECT_DIR$/tests/test.py" />
         <option value="$PROJECT_DIR$/tox.ini" />
         <option value="$PROJECT_DIR$/tests/config.ini" />
-        <option value="$PROJECT_DIR$/src/config_utils/__init__.py" />
         <option value="$PROJECT_DIR$/tests/test_one.py" />
+        <option value="$PROJECT_DIR$/src/config_utils/__init__.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="734" />
+    <option name="width" value="1440" />
     <option name="height" value="821" />
   </component>
   <component name="ProjectView">
@@ -201,7 +224,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1561116686010</updated>
-      <workItem from="1561116687320" duration="23633000" />
+      <workItem from="1561116687320" duration="41952000" />
     </task>
     <task id="LOCAL-00001" summary="tests passing">
       <created>1561131570241</created>
@@ -210,46 +233,60 @@
       <option name="project" value="LOCAL" />
       <updated>1561131570241</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="tests passing">
+      <created>1561153531607</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1561153531607</updated>
+    </task>
+    <task id="LOCAL-00003" summary="tests passing">
+      <created>1561153735108</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1561153735108</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Tox - 2019.06.22 at 00h 24m 09s.xml">
+    <history-entry file="Tox - 2019.06.22 at 11h 57m 49s.xml">
       <configuration name="Tox" configurationId="Tox" />
     </history-entry>
-    <history-entry file="Tox - 2019.06.22 at 00h 25m 43s.xml">
+    <history-entry file="Tox - 2019.06.22 at 11h 59m 11s.xml">
       <configuration name="Tox" configurationId="Tox" />
     </history-entry>
-    <history-entry file="Tox - 2019.06.22 at 00h 30m 03s.xml">
+    <history-entry file="Tox - 2019.06.22 at 11h 59m 45s.xml">
       <configuration name="Tox" configurationId="Tox" />
     </history-entry>
-    <history-entry file="Tox - 2019.06.22 at 00h 32m 51s.xml">
+    <history-entry file="Tox - 2019.06.22 at 12h 00m 40s.xml">
       <configuration name="Tox" configurationId="Tox" />
     </history-entry>
-    <history-entry file="Tox - 2019.06.22 at 00h 36m 55s.xml">
+    <history-entry file="Tox - 2019.06.22 at 12h 11m 58s.xml">
       <configuration name="Tox" configurationId="Tox" />
     </history-entry>
-    <history-entry file="Tox - 2019.06.22 at 00h 39m 25s.xml">
+    <history-entry file="Tox - 2019.06.22 at 12h 17m 19s.xml">
       <configuration name="Tox" configurationId="Tox" />
     </history-entry>
-    <history-entry file="Tox - 2019.06.22 at 00h 40m 28s.xml">
+    <history-entry file="Tox - 2019.06.22 at 12h 18m 13s.xml">
       <configuration name="Tox" configurationId="Tox" />
     </history-entry>
-    <history-entry file="Tox - 2019.06.22 at 00h 41m 34s.xml">
+    <history-entry file="Tox - 2019.06.22 at 12h 19m 12s.xml">
       <configuration name="Tox" configurationId="Tox" />
     </history-entry>
-    <history-entry file="Tox - 2019.06.22 at 00h 42m 09s.xml">
+    <history-entry file="Tox - 2019.06.22 at 12h 19m 34s.xml">
       <configuration name="Tox" configurationId="Tox" />
     </history-entry>
-    <history-entry file="Tox - 2019.06.22 at 00h 43m 40s.xml">
+    <history-entry file="Tox - 2019.06.22 at 12h 20m 08s.xml">
       <configuration name="Tox" configurationId="Tox" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23633000" />
+    <option name="totallyTimeSpent" value="41952000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="821" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="821" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
@@ -287,7 +324,16 @@
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/config_utils$Tox.coverage" NAME="Tox Coverage Results" MODIFIED="1561153414496" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/config_utils$Tox.coverage" NAME="Tox Coverage Results" MODIFIED="1561195290878" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>os.environ['User']</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/tox.ini">
@@ -327,22 +373,36 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/config_utils/__init__.py">
+    <entry file="file://$PROJECT_DIR$/.tox/py3.7/lib/python3.7/site-packages/_pytest/assertion/rewrite.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
-          <caret line="92" column="26" selection-start-line="92" selection-start-column="26" selection-end-line="92" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#34#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="208">
+          <caret line="308" selection-start-line="308" selection-end-line="308" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.tox/py3.7/lib/python3.7/os.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="674" selection-start-line="674" selection-end-line="674" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_one.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="70">
-          <caret line="30" column="82" selection-start-line="30" selection-start-column="82" selection-end-line="30" selection-end-column="82" />
+        <state relative-caret-position="138">
+          <caret line="94" column="35" selection-start-line="94" selection-start-column="35" selection-end-line="94" selection-end-column="35" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/config_utils/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="208" column="23" selection-start-line="208" selection-start-column="23" selection-end-line="208" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
           </folding>
         </state>
       </provider>
